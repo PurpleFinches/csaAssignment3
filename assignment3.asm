@@ -2,12 +2,18 @@
 # I found this MIPS Reference Sheet useful. https://github.com/TheIcyStar/MIPS-reference 
 
 .data
-    greeting:   .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
-    contPrompt: .asciiz "Press ENTER to continue."
-    cardDeck:   .space   260
+    greeting:    .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
+    contPrompt:  .asciiz "Press ENTER to continue."
+    cardDeck:    .space  260
+    
+    suitSize:	 .word	 13
 
 .text
 main:
+    li $s0, 'H'
+    li $s1, 'S'
+    li $s2, 'C'
+    li $s3, 'A'
 
     li $v0, 4
     la $a0, greeting
@@ -28,6 +34,48 @@ main:
 
 generateDeck:
     
+    #Initially adding 1 to $t1 for card numbers
+    addi $t1, $zero, 1
+   
+    jal generateHearts
+   
+    # jal generateSpades
+   
+    # jal generateClubs
+   
+    # jal generateAces
+   
+    jr $ra
+   
+generateHearts:
+    
+    # Index will be $t0
+    addi $t0, $zero, 0
+    
+    # Card Number will be $t1
+    addi $t1, $t1, 1
+    
+    #stores card number as int
+    sw $t1, cardDeck($t0)
+    addi $t0, $t0, 4
+    
+    #Stores card suit as a char
+    sw $s0, cardDeck($t0)
+    addi $t0, $t0, 4
+    
+    jr $ra
+    
+    
+   
+
+
+generateSpades:
+
+
+generateClubs:
+
+
+generateAces:
     
 
 shuffleDeck:
