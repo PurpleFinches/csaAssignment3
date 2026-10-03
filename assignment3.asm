@@ -1,9 +1,10 @@
 # As per the usual, no AI was used to create this, either for assistance or code completion.
-# 
+# I found this MIPS Reference Sheet useful. https://github.com/TheIcyStar/MIPS-reference 
 
 .data
     greeting:   .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
     contPrompt: .asciiz "Press ENTER to continue."
+    cardDeck:   .space   260
 
 .text
 main:
@@ -18,13 +19,16 @@ main:
 
     # I used the following code as a way to implement the "Press ENTER to continue subroutine:
     # https://stackoverflow.com/questions/49722074/ddg#55756567
-    jal continuePrompt    
+    jal continuePrompt
+    
+    jal generateDeck
 
     li $v0, 10
     syscall
 
 generateDeck:
-
+    
+    
 
 shuffleDeck:
 
