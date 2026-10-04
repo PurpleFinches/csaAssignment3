@@ -109,10 +109,42 @@ generateSpades:
 
 generateClubs:
 
+    # Card Number will be $t1
+    addi $t1, $t1, 1
+    
+    #stores card number as int
+    sw $t1, cardDeck($t0)
+    addi $t0, $t0, 4
+    
+    #Stores card suit as a char
+    sw $s2, cardDeck($t0)
+    addi $t0, $t0, 4
+    
+
+    ble $t1, 13, generateClubs
+    
+    jr $ra
 
 
 
 generateAces:
+
+    # Card Number will be $t1
+    addi $t1, $t1, 1
+    
+    #stores card number as int
+    sw $t1, cardDeck($t0)
+    addi $t0, $t0, 4
+    
+    #Stores card suit as a char
+    sw $s3, cardDeck($t0)
+    addi $t0, $t0, 4
+    
+
+    ble $t1, 13, generateAces
+    
+    jr $ra
+    
     
 
 shuffleDeck:
