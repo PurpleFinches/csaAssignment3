@@ -83,8 +83,11 @@ dealPrompt:
     j end
     
 generateDeck:
+
     
-    #Initially adding 1 to $t1 for card numbers since the first card starts at 1, not 0
+    #Initially adding 1 to $t1 for card numbers since the first card starts at 2, not 0. Each subroutine will add another +1
+    #so that cards start at 2. I honestly don't remember why I did this instead of just setting $t1 to 2 right here, but I'm
+    #too scared to go back and edit it now.
     addi $t1, $zero, 1
     li $t0, 0
     
