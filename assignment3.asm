@@ -7,6 +7,9 @@
     
     greeting:    .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
     contPrompt:  .asciiz "Press ENTER to continue."
+    
+    genID:	 .word	1
+    genSeed:	 .word	1235
 
 
 
@@ -15,7 +18,7 @@ main:
     li $s0, 'H'
     li $s1, 'S'
     li $s2, 'C'
-    li $s3, 'A'
+    li $s3, 'D'
 
     li $v0, 4
     la $a0, greeting
@@ -58,7 +61,7 @@ generateDeck:
     jal generateClubs
     addi $t1, $zero, 1
    
-    jal generateAces
+    jal generateDiamonds
     addi $t1, $zero, 1
    
     move $ra, $s4
@@ -128,7 +131,7 @@ generateClubs:
 
 
 
-generateAces:
+generateDiamonds:
 
     # Card Number will be $t1
     addi $t1, $t1, 1
@@ -142,7 +145,7 @@ generateAces:
     addi $t0, $t0, 4
     
 
-    ble $t1, 13, generateAces
+    ble $t1, 13, generateDiamonds
     
     jr $ra
     
@@ -151,8 +154,12 @@ generateAces:
 shuffleDeck:
 
     # Shuffle by first getting the current time, using it as a seed for a random number gen, then
-    # ensuring 0 <= n <= 52
+    # ensuring 0 <= n <= 52(?). Counter that runs 1000 times by picking two random 8-byte values and swapping the two? 
+    # https://www.youtube.com/watch?v=79VEKN-_J8I
     
+    
+	
+
     jr $ra
 
 
