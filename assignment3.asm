@@ -3,7 +3,7 @@
 
 .data
     cardDeck:    .space  416
-    suitCap:	 .word	 13
+    deckRange:	 .word	 51
     
     greeting:    .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
     contPrompt:  .asciiz "Press ENTER to continue."
@@ -30,6 +30,9 @@ main:
     
     # Index $t9 will increment
     addi $t9, $t9, 0
+    
+    # Setting $t7 to 0. It's the counter we'll be using for the shuffling logic
+    addi $t7, $zero, 0
 
     # I used the following code as a way to implement the "Press ENTER to continue subroutine:
     # https://stackoverflow.com/questions/49722074/ddg#55756567
@@ -153,12 +156,40 @@ generateDiamonds:
 
 shuffleDeck:
 
-    # Shuffle by first getting the current time, using it as a seed for a random number gen, then
-    # ensuring 0 <= n <= 52(?). Counter that runs 1000 times by picking two random 8-byte values and swapping the two? 
-    # https://www.youtube.com/watch?v=79VEKN-_J8I
+    # Make an index of 0-52. Sll on that resulting value to get the multiple of 8, then swap the number value, and swap its suit (offset +4).
+    beq $t7, 1000, shuffleEnd
+    li $v0, 42
+    li $a1, 52
+    syscall
+    move $t0, $a0
     
+    li $v0, 42
+    li $a1, 51
+    syscall
+    move $t1, $a0
     
+    # Multiplies the index to a multiple of 8. Since there are 416 bytes in the array, this should be able to hit every value.
+    sll $t0, $t0, 3
+    sll $t1, $t1, 3
+    
+    # All the swaps we need here. Will loop until a counter on $t7 reaches 1000
+    lw $t2, cardDeck($t0)
+    lw $t3, cardDeck+4($t0)
+    
+    lw $t4, cardDeck($t1)
+    lw $t5, cardDeck+4($t1)
+    
+    sw $t2, cardDeck($t1)
+    sw $t3, cardDeck+4($t1)
+    
+    sw $t4, cardDeck($t0)
+    sw $t5, cardDeck+4($t0)
+    
+    addi $t7, $t7, 1
+    
+    j shuffleDeck
 	
+shuffleEnd:
 
     jr $ra
 
