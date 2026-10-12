@@ -33,13 +33,14 @@ main:
     jal continuePrompt
     
     jal generateDeck
+    
+    jal shuffleDeck
 
-    li $v0, 10
-    syscall
-
+    j end
+    
 generateDeck:
     
-    #Initially adding 1 to $t1 for card numbers
+    #Initially adding 1 to $t1 for card numbers since the first card starts at 1, not 0
     addi $t1, $zero, 1
     li $t0, 0
     
@@ -149,6 +150,11 @@ generateAces:
 
 shuffleDeck:
 
+    # Shuffle by first getting the current time, using it as a seed for a random number gen, then
+    # ensuring 0 <= n <= 52
+    
+    jr $ra
+
 
 dealCards:
 
@@ -174,3 +180,7 @@ continuePrompt:
     bne $t0, 10, continuePrompt
 
     jr $ra
+
+end:
+    li $v0, 10
+    syscall
