@@ -33,7 +33,7 @@ main:
     # Setting $t7 to 0. It's the counter we'll be using for the shuffling logic
     addi $t7, $zero, 0
 
-    # I used the following code as a way to implement the "Press ENTER to continue subroutine:
+    # I used the following code as a way to implement the "Press ENTER to continue" subroutine:
     # https://stackoverflow.com/questions/49722074/ddg#55756567
     jal continuePrompt
     
