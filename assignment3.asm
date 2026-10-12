@@ -2,16 +2,15 @@
 # I found this MIPS Reference Sheet useful. https://github.com/TheIcyStar/MIPS-reference 
 
 .data
-    cardDeck:    .space  416
-    deckRange:	 .word	 51
+    cardDeck:    	 .space  416
+    hand:	 	 .space  40
     
-    greeting:    .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
-    contPrompt:  .asciiz "Press ENTER to continue."
+    greeting:    	 .asciiz "This program generates and shuffles a deck of cards, then deals a deck of five."
+    contPrompt:  	 .asciiz "Press ENTER to continue."
     
-    genID:	 .word	1
-    genSeed:	 .word	1235
-
-
+    dealPromptMsg:	 .asciiz "Press ENTER to be dealt five more cards."
+    cardsMsg:		 .asciiz "Your cards Are: "
+    outOfCardsMsg:	 .asciiz "\nYou are out of cards!"
 
 .text
 main:
@@ -41,6 +40,42 @@ main:
     jal generateDeck
     
     jal shuffleDeck
+    
+    #Sets registers to 0 for the dealCards subroutine. 
+    li $t0, 0
+    li $t1, 0
+    
+dealPrompt:
+
+    li $v0, 4
+    la $a0, cardsMsg
+    syscall
+
+    jal dealCards
+    
+    # This section is a copycat of the continue prompt, just runs it again if ENTER is selected.
+    li $v0, 11
+    la $a0, '\n'
+    syscall
+
+    li $t0, 0
+    li $v0, 4
+    la $a0, dealPromptMsg
+    syscall
+    
+    li $v0, 12
+    syscall
+
+    move $t8, $v0
+
+    li $v0, 11
+    la $a0, '\n'
+    syscall
+      
+    bne $t8, 10, end
+    
+    #Subroutine will repeat until user runs out of cards.
+    j dealPrompt
 
     j end
     
@@ -157,14 +192,14 @@ generateDiamonds:
 shuffleDeck:
 
     # Make an index of 0-52. Sll on that resulting value to get the multiple of 8, then swap the number value, and swap its suit (offset +4).
-    beq $t7, 1000, shuffleEnd
+    beq $t7, 1000, branchEnd
     li $v0, 42
     li $a1, 52
     syscall
     move $t0, $a0
     
     li $v0, 42
-    li $a1, 51
+    li $a1, 52
     syscall
     move $t1, $a0
     
@@ -188,14 +223,45 @@ shuffleDeck:
     addi $t7, $t7, 1
     
     j shuffleDeck
-	
-shuffleEnd:
-
-    jr $ra
-
 
 dealCards:
+    #Branch handles condition for if player is out of cards to deal. Stops at 50 since the 2 spare cards can't make a full deck.
+    bge, $t1, 400, outOfCards    
+    #Branch handles condition for when 5 cards are drawn.
+    beq, $t0, 40, branchEnd
+    
+    lw $t2, cardDeck($t1)
+    lw $t3, cardDeck+4($t1)
+    
+    sw $t2, hand($t0)
+    sw $t3, hand+4($t0)
+    
+    li $v0, 1
+    lw $a0, hand($t0)
+    syscall
+    
+    li $v0, 4
+    la $a0, hand+4($t0)
+    syscall
+    
+    li $v0, 11
+    la $a0, ' '
+    syscall
+    
+    
+    addi $t0, $t0, 8
+    addi $t1, $t1, 8
+    
+    j dealCards
+    
+    jr $ra
 
+outOfCards:
+    li $v0, 4
+    la $a0, outOfCardsMsg
+    syscall
+    
+    j end
 
 continuePrompt:
     li $v0, 4
@@ -217,6 +283,9 @@ continuePrompt:
       
     bne $t0, 10, continuePrompt
 
+    jr $ra
+    
+branchEnd:
     jr $ra
 
 end:
