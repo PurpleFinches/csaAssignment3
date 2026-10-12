@@ -47,6 +47,9 @@ main:
     
 dealPrompt:
 
+    #Branch handles condition for if player is out of cards to deal. Stops at 50 since the 2 spare cards can't make a full deck.
+    bge, $t1, 400, outOfCards
+    
     li $v0, 4
     la $a0, cardsMsg
     syscall
@@ -224,9 +227,7 @@ shuffleDeck:
     
     j shuffleDeck
 
-dealCards:
-    #Branch handles condition for if player is out of cards to deal. Stops at 50 since the 2 spare cards can't make a full deck.
-    bge, $t1, 400, outOfCards    
+dealCards:    
     #Branch handles condition for when 5 cards are drawn.
     beq, $t0, 40, branchEnd
     
